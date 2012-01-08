@@ -148,8 +148,8 @@ do_put(Key, Value, State=#state{ nursery=Tree }) ->
     end.
 
 flush_nursery(State=#state{nursery=Tree, top=Top}) ->
-    TreeSize = gb_trees:size( Tree ),
-    if TreeSize > 0 ->
+    case gb_trees:is_empty(Tree) of
+	false ->
 %            error_logger:info_msg("flushing to top=~p, alive=~p~n", [Top, erlang:is_process_alive(Top)]),
             FileName = filename:join(State#state.dir, "nursery.data"),
             {ok, BT} = lsm_btree_writer:open(FileName, (1 bsl ?TOP_LEVEL)),
